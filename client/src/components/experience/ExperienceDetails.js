@@ -8,30 +8,35 @@ import {
   clearErrors,
 } from "../../actions/experienceActions";
 
-const ExperienceDetails = ({ match }) => {
+const ExperienceDetails = ({ match: { params: { id } } }) => {
   const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, experience, error } = useSelector(
-    (state) => state.experienceDetails
-  );
   useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-    dispatch(getExperienceDetails(match.params.id));
-  }, [dispatch, alert, error, match.params.id]);
+    console.log(`object`)
+    dispatch(getExperienceDetails(id));
+  }, [dispatch, id]);
+  // const { loading, experience, error } = useSelector(
+  //   (state) => state.experienceDetails
+  // );
+  const isLoading = useSelector(state => state.experienceDetails.loading)
+  const experience = useSelector(state => state.experienceDetails.experience)
+  const error = useSelector(state => state.experienceDetails.error)
+
+  console.log("🚀 ~ file: ExperienceDetails.js ~ line 38 ~ ExperienceDetails ~ experience.langue", experience)
   return (
     <Fragment>
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : (
-        <Fragment>
-          <div>{experience.title}</div>
-        </Fragment>
+        <p>Hello </p>
+        // <Fragment>
+        //   <div>{experience.title}</div>
+        //   <div>{experience.langue}</div>
+        //   <div>{!experience.cibles.isEmpty() && experience.cibles[0]}</div>
+
+        // </Fragment>
       )}
     </Fragment>
   );
 };
-
 export default ExperienceDetails;

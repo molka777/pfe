@@ -25,8 +25,8 @@ export const getExperiences = () => async (dispatch) => {
   }
 };
 export const getExperienceDetails = (id) => async (dispatch) => {
+  dispatch({ type: EXPERIENCE_DETAILS_REQUEST });
   try {
-    dispatch({ type: EXPERIENCE_DETAILS_REQUEST });
     const { data } = await axios.get(`/api/experience/${id}`);
     dispatch({
       type: EXPERIENCE_DETAILS_SUCCESS,
