@@ -72,7 +72,7 @@ const experienceController = {
         type,
         category,
         title,
-        activite,
+        activite,// the variable names are  always in english 
         heure_d,
         heure_f,
         langue,
