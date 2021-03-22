@@ -1,24 +1,35 @@
-import React, { Fragment } from "react";
-
+import React, { Fragment, useEffect } from "react";
 import "../../App.css";
-import FourCards from "./FourCards";
-import Informations from "./Informations";
-import Introduction from "./Introduction";
-const ExperienceDetails = () => {
+import Loader from "../layout/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "react-alert";
+import {
+  getExperienceDetails,
+  clearErrors,
+} from "../../actions/experienceActions";
+
+const ExperienceDetails = ({ match }) => {
+  const alert = useAlert();
+  const dispatch = useDispatch();
+  const { loading, experience, error } = useSelector(
+    (state) => state.experienceDetails
+  );
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+    dispatch(getExperienceDetails(match.params.id));
+  }, [dispatch, alert, error, match.params.id]);
   return (
     <Fragment>
-      <div>
-        {/* Page Content */}
-        <div className="container">
-          {/* Heading */}
-          <Introduction />
-          {/* Heading */}
-          {/* /FourCards */}
-          <FourCards />
-          {/* /.FourCards */}
-        </div>
-      </div>
-      <Informations />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Fragment>
+          <div>{experience.title}</div>
+        </Fragment>
+      )}
     </Fragment>
   );
 };

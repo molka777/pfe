@@ -171,12 +171,9 @@ const experienceController = {
   getSingleExperience: async (req, res) => {
     try {
       const experience = await Experiences.findById(req.params.id);
-      if (!experience)
-        return res.status(404).json({ msg: "experience non trouvée" });
-      res.json(experience);
-      console.log(experiences);
+      res.json({ status: "success", experience: experience });
     } catch (err) {
-      return res.status(500).json({ msg: "experience non trouvée" });
+      return res.status(500).json({ msg: err.message });
     }
   },
 };
