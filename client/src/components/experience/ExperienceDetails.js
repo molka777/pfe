@@ -6,7 +6,8 @@ import { useAlert } from "react-alert";
 import {
   getExperienceDetails,
   clearErrors,
-} from "../../actions/experienceActions";
+} from "../../JS/actions/experienceActions";
+
 
 const ExperienceDetails = ({ match: { params: { id } } }) => {
   const alert = useAlert();
@@ -18,25 +19,23 @@ const ExperienceDetails = ({ match: { params: { id } } }) => {
   // const { loading, experience, error } = useSelector(
   //   (state) => state.experienceDetails
   // );
-  const isLoading = useSelector(state => state.experienceDetails.loading)
-  const experience = useSelector(state => state.experienceDetails.experience)
-  const error = useSelector(state => state.experienceDetails.error)
+  const isLoading = useSelector(state => state.experiencesReducers.isLoading)
+  const experience = useSelector(state => state.experiencesReducers.experience)
+  const error = useSelector(state => state.experiencesReducers.error)
 
   console.log("🚀 ~ file: ExperienceDetails.js ~ line 38 ~ ExperienceDetails ~ experience.langue", experience)
   return (
-    <Fragment>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <p>Hello </p>
-        // <Fragment>
-        //   <div>{experience.title}</div>
-        //   <div>{experience.langue}</div>
-        //   <div>{!experience.cibles.isEmpty() && experience.cibles[0]}</div>
 
-        // </Fragment>
-      )}
-    </Fragment>
+    isLoading ? (
+      <Loader />
+    ) : (
+      <Fragment>
+        <div>{experience.title}</div>
+
+
+      </Fragment>
+    )
+
   );
 };
 export default ExperienceDetails;
