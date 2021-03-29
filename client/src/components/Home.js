@@ -1,16 +1,24 @@
-import React, { Fragment, useEffect } from "react";
-import MetaData from "./layout/MetaData";
-import { useDispatch, useSelector } from "react-redux";
-import { getExperiences } from "../actions/experienceActions";
+import React, { Fragment, useEffect } from 'react';
+import MetaData from './layout/MetaData';
+import { useDispatch, useSelector } from 'react-redux';
+import { getExperiences } from '../JS/actions/experienceActions';
 
-import Experience from "./experience/Experience";
-import Loader from "./layout/Loader";
-import { useAlert } from "react-alert";
+import Experience from './experience/Experience';
+import Loader from './layout/Loader';
+import { useAlert } from 'react-alert';
 const Home = () => {
   const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, experiences, error, experiencesCount } = useSelector(
-    (state) => state.experiences
+  // const { loading, experiences, error, experiencesCount } = useSelector(
+  //   (state) => state.experiences
+  // );
+  const loading = useSelector((state) => state.experiencesReducers.isLoading);
+  const experiences = useSelector(
+    (state) => state.experiencesReducers.experiences
+  );
+  const error = useSelector((state) => state.experiencesReducers.error);
+  const experiencesCount = useSelector(
+    (state) => state.experiencesReducers.experiencesCount
   );
   useEffect(() => {
     if (error) {
@@ -24,13 +32,13 @@ const Home = () => {
         <Loader />
       ) : (
         <Fragment>
-          <MetaData title={"Create and Live the Best Experiences"} />
+          <MetaData title={'Create and Live the Best Experiences'} />
           <div>
             <h1>Home page</h1>
             <main>
-              <div className="album py-5 bg-light">
-                <div className="container">
-                  <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              <div className='album py-5 bg-light'>
+                <div className='container'>
+                  <div className='row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3'>
                     {experiences &&
                       experiences.map((experience) => (
                         <Experience
