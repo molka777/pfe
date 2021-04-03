@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   FETCH_ALL_EXPERIENCES,
   FETCH_ALL_EXPERIENCES_SUCCESS,
@@ -6,13 +6,32 @@ import {
   FETCH_EXPERIENCE_DETAILS,
   FETCH_EXPERIENCE_DETAILS_SUCCESS,
   FETCH_EXPERIENCE_DETAILS_FAIL,
+  ADD_EXPERIENCE,
+  ADD_EXPERIENCE_SUCCESS,
+  ADD_EXPERIENCE_FAIL,
   CLEAR_ERRORS,
-} from '../constants/experienceConstants';
-
+} from "../constants/experienceConstants";
+export const addExperience = (newExperience) => async (dispatch) => {
+  dispatch({
+    type: ADD_EXPERIENCE,
+  });
+  try {
+    const addRes = await axios.post("api/experience", newExperience);
+    dispatch({
+      type: ADD_EXPERIENCE_SUCCESS,
+      payload: addRes.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADD_EXPERIENCE_FAIL,
+      payload: error.response.data,
+    });
+  }
+};
 export const getExperiences = () => async (dispatch) => {
   try {
     dispatch({ type: FETCH_ALL_EXPERIENCES });
-    const { data } = await axios.get('/api/experience');
+    const { data } = await axios.get("/api/experience");
     dispatch({
       type: FETCH_ALL_EXPERIENCES_SUCCESS,
       payload: data,
@@ -34,7 +53,7 @@ export const getExperienceDetails = (id) => async (dispatch) => {
     });
   } catch (error) {
     console.log(
-      '🚀 ~ file: experienceActions.js ~ line 38 ~ getExperienceDetails ~ error',
+      "🚀 ~ file: experienceActions.js ~ line 38 ~ getExperienceDetails ~ error",
       error
     );
     dispatch({

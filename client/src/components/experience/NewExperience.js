@@ -56,7 +56,6 @@ const NewExperience = () => {
         program,
         target,
         phobia,
-
         price,
       })
     );

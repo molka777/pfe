@@ -5,8 +5,11 @@ import {
   FETCH_EXPERIENCE_DETAILS,
   FETCH_EXPERIENCE_DETAILS_SUCCESS,
   FETCH_EXPERIENCE_DETAILS_FAIL,
+  ADD_EXPERIENCE,
+  ADD_EXPERIENCE_SUCCESS,
+  ADD_EXPERIENCE_FAIL,
   CLEAR_ERRORS,
-} from '../constants/experienceConstants';
+} from "../constants/experienceConstants";
 
 const initialState = {
   experiences: [],
@@ -53,6 +56,23 @@ export const experiencesReducers = (
       return {
         ...state,
         error: payload,
+      };
+    case ADD_EXPERIENCE:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case ADD_EXPERIENCE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        experience: payload,
+      };
+    case ADD_EXPERIENCE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        errors: payload,
       };
 
     default:
