@@ -84,6 +84,7 @@ const experienceSchema = new Schema(
     isPublished: false,
     isBeingValidated: false,
     isValidated: false,
+    isCreated: false,
   },
   {
     timestamps: true,

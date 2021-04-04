@@ -41,6 +41,7 @@ const FifthStep = (props) => {
       isValidated: false,
       isBeingValidated: false,
       isPublished: false,
+      isCreated: true,
     });
     console.log(experience.program);
     // if (

@@ -88,6 +88,7 @@ const experienceController = {
         isPublished,
         isBeingValidated,
         isValidated,
+        isCreated,
       } = req.body;
       const newExperience = new Experiences({
         type,
@@ -109,6 +110,7 @@ const experienceController = {
         isPublished,
         isBeingValidated,
         isValidated,
+        isCreated,
       });
       //  const newExperience = new Experiences({ title: "test 3", activite: "activite 3" })
       console.log("title of experience : ", newExperience["title"]);
@@ -120,6 +122,7 @@ const experienceController = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  //Delete experience => /api/experience/:id
   deleteExperience: async (req, res) => {
     try {
       await Experiences.findByIdAndDelete(req.params.id);
@@ -150,6 +153,7 @@ const experienceController = {
         isPublished,
         isBeingValidated,
         isValidated,
+        isCreated,
       } = req.body;
       await Experiences.findByIdAndUpdate(
         { _id: req.params.id },
@@ -173,6 +177,7 @@ const experienceController = {
           isPublished,
           isBeingValidated,
           isValidated,
+          isCreated,
         }
       );
       res.json({ msg: "L'expérience a été modifié avec succès" });

@@ -9,6 +9,9 @@ import {
   ADD_EXPERIENCE_SUCCESS,
   ADD_EXPERIENCE_FAIL,
   CLEAR_ERRORS,
+  DELETE_EXPERIENCE,
+  DELETE_EXPERIENCE_SUCCESS,
+  DELETE_EXPERIENCE_FAIL,
 } from "../constants/experienceConstants";
 
 const initialState = {

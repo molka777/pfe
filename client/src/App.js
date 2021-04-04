@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import ThirdStep from "./components/createdExperience/ThirdStep";
 import FourthStep from "./components/createdExperience/FourthStep";
 import FifthStep from "./components/createdExperience/FifthStep";
-import AddExperience from "./components/createdExperience/AddExperience";
+import ExperiencesList from "./components/createdExperience/ExperiencesList";
 
 function App() {
   const [experience, setExperience] = useState({});
@@ -28,6 +28,8 @@ function App() {
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/experience/:id" component={ExperienceDetails} />
+          <Route path="/experiences" component={ExperiencesList} exact />
+
           <Route
             render={(props) => (
               <FirstStep
@@ -83,17 +85,7 @@ function App() {
             path="/fifth"
             exact
           />
-          <Route
-            render={(props) => (
-              <AddExperience
-                {...props}
-                experience={experience}
-                updateExperience={updateExperience}
-              />
-            )}
-            path="/add"
-            exact
-          />
+
           <Route path="/admin" component={CreatedExperienceListAd} />
           <Route path="/sidebar" component={SideBar} />
         </Switch>

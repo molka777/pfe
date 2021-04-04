@@ -16,10 +16,8 @@ import {
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import SideBar from "../layout/SideBar";
-import Alerte from "./Alerte";
 const FirstStep = (props) => {
   const { handleSubmit } = useForm({});
-  const { buttonLabel, className } = props;
 
   const [modal, setModal] = useState(false);
 
