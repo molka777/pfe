@@ -9,9 +9,9 @@ import {
   ADD_EXPERIENCE_SUCCESS,
   ADD_EXPERIENCE_FAIL,
   CLEAR_ERRORS,
-  DELETE_EXPERIENCE,
-  DELETE_EXPERIENCE_SUCCESS,
-  DELETE_EXPERIENCE_FAIL,
+  UPDATE_EXPERIENCE_FAIL,
+  UPDATE_EXPERIENCE_SUCCESS,
+  UPDATE_EXPERIENCE,
 } from "../constants/experienceConstants";
 
 const initialState = {
@@ -74,7 +74,26 @@ export const experiencesReducers = (
     case ADD_EXPERIENCE_FAIL:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
+        errors: payload,
+      };
+    case UPDATE_EXPERIENCE:
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case UPDATE_EXPERIENCE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        experience: payload.experience,
+      };
+
+    case UPDATE_EXPERIENCE_FAIL:
+      return {
+        ...state,
+        isLoading: false,
         errors: payload,
       };
 

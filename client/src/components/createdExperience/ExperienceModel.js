@@ -1,13 +1,6 @@
 import React from "react";
-import {
-  Card,
-  CardBody,
-  Row,
-  Col,
-  Button,
-  CardText,
-  CardLink,
-} from "reactstrap";
+import { Card, CardBody, Row, Col, CardText, CardLink } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const ExperienceModel = ({ experience }) => {
   return (
@@ -31,14 +24,35 @@ const ExperienceModel = ({ experience }) => {
 
                     <CardText>{experience.title}</CardText>
 
+                    <Link
+                      to={`/experience/${experience._id}`}
+                      className="btn btn-sm btn-outline-secondary"
+                      style={{
+                        backgroundColor: "white",
+                        boxShadow: "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                        border: "0px white",
+                      }}
+                    >
+                      <small>Modifier</small>
+                    </Link>
                     <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Voir</small>
-                    </CardLink>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Demander la validation</small>
+                      <Link
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                      >
+                        <small>Demander la validation</small>
+                      </Link>
                     </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
-                      <Button
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
                         style={{
                           backgroundColor: "white",
                           boxShadow:
@@ -47,7 +61,7 @@ const ExperienceModel = ({ experience }) => {
                         }}
                       >
                         <small>Supprimer</small>
-                      </Button>
+                      </Link>
                     </CardLink>
                   </>
                 ) : experience.isBeingValidated ? (
@@ -62,14 +76,19 @@ const ExperienceModel = ({ experience }) => {
                     </small>
                     <CardText>{experience.title}</CardText>
 
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Voir</small>
-                    </CardLink>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Demander la validation</small>
-                    </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
-                      <small>Supprimer</small>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Consulter</small>
+                      </Link>
                     </CardLink>
                   </>
                 ) : experience.isValidated ? (
@@ -83,14 +102,47 @@ const ExperienceModel = ({ experience }) => {
                       Acceptée
                     </small>
                     <CardText>{experience.title}</CardText>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Voir</small>
-                    </CardLink>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Publier</small>
+                    <CardLink href="#" style={{ color: "#f5365c " }}>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Modifier</small>
+                      </Link>
                     </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
-                      <small>Supprimer</small>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Publier</small>
+                      </Link>
+                    </CardLink>
+                    <CardLink href="#" style={{ color: "#f5365c " }}>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Supprimer</small>
+                      </Link>
                     </CardLink>
                   </>
                 ) : (
@@ -105,14 +157,47 @@ const ExperienceModel = ({ experience }) => {
                     </small>
 
                     <CardText>{experience.title}</CardText>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Voir</small>
-                    </CardLink>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
-                      <small>Redemander la validation</small>
+                    <CardLink href="#" style={{ color: "#f5365c " }}>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Modifier</small>
+                      </Link>
                     </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
-                      <small>Supprimer</small>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Redemander la validation</small>
+                      </Link>
+                    </CardLink>
+                    <CardLink href="#" style={{ color: "#f5365c " }}>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Supprimer</small>
+                      </Link>
                     </CardLink>
                   </>
                 )}

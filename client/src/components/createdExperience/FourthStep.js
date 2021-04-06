@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addExperience } from "../../JS/actions/experienceActions";
 import {
   Button,
   Card,
@@ -14,7 +12,6 @@ import {
   InputGroup,
   Row,
   Col,
-  Label,
   Progress,
   Container,
   Modal,

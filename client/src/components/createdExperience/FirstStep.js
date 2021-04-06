@@ -17,18 +17,15 @@ import {
 import { useForm } from "react-hook-form";
 import SideBar from "../layout/SideBar";
 const FirstStep = (props) => {
+  const [type, setType] = useState(" ");
   const { handleSubmit } = useForm({});
-
   const [modal, setModal] = useState(false);
-
   const toggle = () => setModal(!modal);
   const onSubmit = () => {
     props.updateExperience({ type: { title: type } });
     props.history.push("/second");
   };
-  const { experience } = props;
 
-  const [type, setType] = useState(" ");
   return (
     <>
       <div style={{ backgroundColor: "#f8f9fe" }}>
@@ -77,7 +74,6 @@ const FirstStep = (props) => {
                     Le type de l'expérience
                   </h2>
                 </Col>
-
                 <Row>
                   <Col lg="6" xl="5">
                     <Card className="card-stats mb-4 mb-xl-0">
@@ -95,7 +91,7 @@ const FirstStep = (props) => {
                           </Col>
                         </Row>
                         <div className="mt-3 mb-0 text-muted text-sm">
-                          {type == "en ligne" ? (
+                          {type === "en ligne" ? (
                             <button
                               className="btn-icon-clipboard"
                               style={{
@@ -187,7 +183,7 @@ const FirstStep = (props) => {
                           </Col>
                         </Row>
                         <div className="mt-3 mb-0 text-muted text-sm">
-                          {type == "en personne" ? (
+                          {type === "en personne" ? (
                             <button
                               className="btn-icon-clipboard"
                               id="tooltip982655500"
@@ -267,7 +263,7 @@ const FirstStep = (props) => {
                 </Row>
               </div>
               <div>
-                {type == undefined || type == " " ? (
+                {type === undefined || type === " " ? (
                   <Button
                     className="mt-4"
                     color="primary"

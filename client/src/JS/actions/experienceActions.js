@@ -10,9 +10,9 @@ import {
   ADD_EXPERIENCE_SUCCESS,
   ADD_EXPERIENCE_FAIL,
   CLEAR_ERRORS,
-  DELETE_EXPERIENCE,
-  DELETE_EXPERIENCE_SUCCESS,
-  DELETE_EXPERIENCE_FAIL,
+  UPDATE_EXPERIENCE_FAIL,
+  UPDATE_EXPERIENCE_SUCCESS,
+  UPDATE_EXPERIENCE,
 } from "../constants/experienceConstants";
 export const addExperience = (newExperience) => async (dispatch) => {
   dispatch({
@@ -85,7 +85,26 @@ export const getExperienceDetails = (id) => async (dispatch) => {
 //     });
 //   }
 // };
+export const updateExperience = (id, updatedExperience) => async (dispatch) => {
+  try {
+    dispatch({
+      type: UPDATE_EXPERIENCE,
+    });
 
+    const { data } = await axios.put(
+      `/api/experience/${id}`,
+      updatedExperience
+    );
+    dispatch({
+      type: UPDATE_EXPERIENCE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_EXPERIENCE_FAIL,
+    });
+  }
+};
 //clear Errors
 export const clearErrors = () => async (dispatch) => {
   dispatch({

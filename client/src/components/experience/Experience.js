@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Rate from "../layout/Rate";
 
-import { faHeart, faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 const Experience = ({ experience }) => {
   return (
     <div>
@@ -13,6 +13,7 @@ const Experience = ({ experience }) => {
             src="https://image.freepik.com/free-photo/front-view-woman-playing-guitar_23-2148243323.jpg"
             width="100%"
             height="100%"
+            alt="expérience"
           />
           <div className="card-body">
             <p

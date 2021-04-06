@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addExperience } from "../../JS/actions/experienceActions";
 
 import {
@@ -11,12 +11,8 @@ import {
   FormGroup,
   Form,
   Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   Row,
   Col,
-  Label,
   Progress,
   Container,
   Modal,

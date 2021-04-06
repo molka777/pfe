@@ -39,6 +39,7 @@ const SecondStep = (props) => {
       title: title,
       themes: [...theme],
       activity: activity,
+      price: price,
     });
     console.log(data);
     props.history.push("/Third");
@@ -53,6 +54,7 @@ const SecondStep = (props) => {
   const [title, setTitle] = useState(" ");
   const [theme, setTheme] = useState([]);
   const [activity, setActivity] = useState(" ");
+  const [price, setPrice] = useState(0);
 
   return (
     <>
@@ -378,6 +380,50 @@ const SecondStep = (props) => {
                           style={{ color: "#dd3a4a" }}
                         >
                           {errors.activity.message}
+                        </span>
+                      )}
+                    </FormGroup>
+                    <FormGroup
+                      className="mb-3 border"
+                      style={{ padding: "2%" }}
+                    >
+                      <div>
+                        <small className="font-weight-bold">
+                          Fixez un prix à votre expérience
+                        </small>
+                      </div>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fas fa-wallet" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          onChange={(e) => setPrice(e.target.value)}
+                          placeholder="Le prix de l'expérience"
+                          type="number"
+                          autoComplete="new-password"
+                          name="price"
+                          invalid={errors["price"]}
+                          innerRef={register({
+                            required: "Le prix est obligatoire.",
+                          })}
+                        />
+                      </InputGroup>
+                      <span
+                        className="mr-2 text-sm"
+                        style={{ color: "#2dce89" }}
+                      >
+                        <i className="ni ni-bulb-61" />
+                        Un conseil sur le prix
+                      </span>
+                      <br />
+                      {errors.price && (
+                        <span
+                          className="mr-2 text-sm"
+                          style={{ color: "#dd3a4a" }}
+                        >
+                          {errors.price.message}
                         </span>
                       )}
                     </FormGroup>

@@ -19,9 +19,9 @@ function App() {
     setExperience((prevExp) => ({ ...prevExp, ...data }));
   };
 
-  const resetExperience = () => {
-    setExperience({});
-  };
+  // const resetExperience = () => {
+  //   setExperience({});
+  // };
   return (
     <Router>
       <div className="App">

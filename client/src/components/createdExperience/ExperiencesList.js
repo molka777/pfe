@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getExperiences } from "../../JS/actions/experienceActions";
 import Loader from "../layout/Loader";
 import ExperienceModel from "./ExperienceModel";
-import { Container, Col, Button } from "reactstrap";
+import { Container, Col } from "reactstrap";
 const ExperiencesList = () => {
   const dispatch = useDispatch();
   const experiences = useSelector(

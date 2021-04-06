@@ -85,6 +85,7 @@ const experienceSchema = new Schema(
     isBeingValidated: false,
     isValidated: false,
     isCreated: false,
+    limitParticipants: { type: Number },
   },
   {
     timestamps: true,

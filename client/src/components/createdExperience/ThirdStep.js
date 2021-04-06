@@ -36,7 +36,7 @@ const ThirdStep = (props) => {
     props.updateExperience({
       target: target,
       difficulty: difficulty,
-
+      limitParticipants: limitParticipants,
       language: language,
     });
     props.history.push("/fourth");
@@ -45,6 +45,8 @@ const ThirdStep = (props) => {
   const [difficulty, setDifficulty] = useState(" ");
   const [language, setLanguage] = useState("Arabe");
   const [phobia, setPhobia] = useState([]);
+  const [limitParticipants, setLimitParticipants] = useState(0);
+
   const addPhobia = (e) => {
     if (e.target.checked) {
       setPhobia([...phobia, e.target.name]);
@@ -178,7 +180,8 @@ const ThirdStep = (props) => {
                         style={{ color: "#2dce89" }}
                       >
                         <i className="ni ni-bulb-61" />
-                        Les enfants doivent etre accompagnés par le tuteur légal
+                        Les enfants doivent etre accompagnés par leur tuteur
+                        légal
                       </span>
                     </FormGroup>
                     <FormGroup
@@ -349,7 +352,53 @@ const ThirdStep = (props) => {
                         Cette partie est facultative{" "}
                       </small>
                     </FormGroup>
-
+                    <FormGroup
+                      className="mb-3 border"
+                      style={{ padding: "2%" }}
+                    >
+                      <div>
+                        <small className="font-weight-bold">
+                          Donnez le nombre limite de participants de votre
+                          expérience
+                        </small>
+                      </div>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-caps-small" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          onChange={(e) => setLimitParticipants(e.target.value)}
+                          placeholder="Le nombre maximal de participants"
+                          type="number"
+                          autoComplete="new-password"
+                          name="participants"
+                          invalid={errors["participants"]}
+                          innerRef={register({
+                            required:
+                              "Le nombre limite de participants est obligatoire.",
+                          })}
+                        />
+                      </InputGroup>
+                      <span
+                        className="mr-2 text-sm"
+                        style={{ color: "#2dce89" }}
+                      >
+                        <i className="ni ni-bulb-61" />
+                        Indiquez le nombre maximal de participants que vous
+                        pouvez gérer pendant l'expérience
+                      </span>
+                      <br />
+                      {errors.participants && (
+                        <span
+                          className="mr-2 text-sm"
+                          style={{ color: "#dd3a4a" }}
+                        >
+                          {errors.participants.message}
+                        </span>
+                      )}
+                    </FormGroup>
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
