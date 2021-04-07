@@ -117,7 +117,10 @@ const experienceController = {
       console.log("L'object experience : ", newExperience);
       await newExperience.save();
       console.log("req.body : ", req.body);
-      res.json({ msg: "expérience créée avec succes" });
+      res.json({
+        msg: "expérience créée avec succes",
+        experience: newExperience,
+      });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

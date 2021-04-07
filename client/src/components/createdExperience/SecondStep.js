@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Button,
@@ -22,27 +22,35 @@ import {
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import SideBar from "../layout/SideBar";
+import { updateExperience } from "../../JS/actions/experienceActions";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-const SecondStep = (props) => {
-  const { experience } = props;
+const SecondStep = () => {
   const [modal, setModal] = useState(false);
-
+  const experience = useSelector(
+    (state) => state.experiencesReducers.experience
+  );
   const toggle = () => setModal(!modal);
   const { register, handleSubmit, errors } = useForm({
-    defaultValues: {
-      titre: experience.title,
-      activity: experience.activity,
-    },
+    // defaultValues: {
+    //   titre: experienceP.title,
+    //   activity: experienceP.activity,
+    // },
   });
+  const dispatch = useDispatch();
+
   const onSubmit = (data) => {
-    props.updateExperience({
-      title: title,
-      themes: [...theme],
-      activity: activity,
-      price: price,
-    });
+    dispatch(
+      updateExperience(experience._id, {
+        ...experience,
+        title: title,
+        themes: [...theme],
+        activity: activity,
+        price: price,
+      })
+    );
     console.log(data);
-    props.history.push("/Third");
   };
   const addTheme = (e) => {
     if (e.target.checked) {
@@ -430,26 +438,26 @@ const SecondStep = (props) => {
                   </CardBody>
                 </Card>
 
-                <Button
+                <Link
                   className="mt-4"
                   style={{ color: "#5e72e4", backgroundColor: "#fff" }}
-                  onClick={() => props.history.push("/first")}
+                  to={`/first`}
                 >
                   Précédent
-                </Button>
+                </Link>
                 {title !== " " && theme !== [] && activity !== " " ? (
-                  <Button className="mt-4" color="primary" type="submit">
-                    Suivant
-                  </Button>
-                ) : (
-                  <Button
+                  <Link
                     className="mt-4"
                     color="primary"
                     type="submit"
-                    disabled
+                    to={`/Third`}
                   >
                     Suivant
-                  </Button>
+                  </Link>
+                ) : (
+                  <Link className="mt-4" color="primary" type="submit" disabled>
+                    Suivant
+                  </Link>
                 )}
               </div>
             </Form>

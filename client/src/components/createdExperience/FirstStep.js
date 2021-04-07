@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -16,15 +16,33 @@ import {
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import SideBar from "../layout/SideBar";
-const FirstStep = (props) => {
+import { useDispatch, useSelector } from "react-redux";
+import { updateExperience } from "../../JS/actions/experienceActions";
+import { Link } from "react-router-dom";
+const FirstStep = ({
+  match: {
+    params: { id },
+  },
+}) => {
+  const dispatch = useDispatch();
   const [type, setType] = useState(" ");
   const { handleSubmit } = useForm({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  const experience = useSelector(
+    (state) => state.experiencesReducers.experience
+  );
   const onSubmit = () => {
-    props.updateExperience({ type: { title: type } });
-    props.history.push("/second");
+    dispatch(updateExperience(id, { ...experience, type: { title: type } }));
+    console.log(experience);
   };
+
+  // useEffect(() => {
+  //   if (experience) {
+  //     dispatch(getExperienceDetails());
+  //     console.log(experience);
+  //   }
+  // }, [experience, dispatch]);
 
   return (
     <>
@@ -264,14 +282,9 @@ const FirstStep = (props) => {
               </div>
               <div>
                 {type === undefined || type === " " ? (
-                  <Button
-                    className="mt-4"
-                    color="primary"
-                    type="button"
-                    disabled
-                  >
+                  <Link className="mt-4" color="primary" type="button" disabled>
                     Suivant
-                  </Button>
+                  </Link>
                 ) : (
                   <Button className="mt-4" color="primary" type="submit">
                     Suivant

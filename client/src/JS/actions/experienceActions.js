@@ -15,10 +15,10 @@ import {
   UPDATE_EXPERIENCE,
 } from "../constants/experienceConstants";
 export const addExperience = (newExperience) => async (dispatch) => {
-  dispatch({
-    type: ADD_EXPERIENCE,
-  });
   try {
+    dispatch({
+      type: ADD_EXPERIENCE,
+    });
     const addRes = await axios.post("api/experience", newExperience);
     dispatch({
       type: ADD_EXPERIENCE_SUCCESS,

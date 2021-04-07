@@ -13,10 +13,10 @@ import FifthStep from "./components/createdExperience/FifthStep";
 import ExperiencesList from "./components/createdExperience/ExperiencesList";
 
 function App() {
-  const [experience, setExperience] = useState({});
+  const [experienceP, setExperienceP] = useState({});
 
-  const updateExperience = (data) => {
-    setExperience((prevExp) => ({ ...prevExp, ...data }));
+  const updateExperienceP = (data) => {
+    setExperienceP((prevExp) => ({ ...prevExp, ...data }));
   };
 
   // const resetExperience = () => {
@@ -30,23 +30,14 @@ function App() {
           <Route path="/experience/:id" component={ExperienceDetails} />
           <Route path="/experiences" component={ExperiencesList} exact />
 
-          <Route
-            render={(props) => (
-              <FirstStep
-                {...props}
-                experience={experience}
-                updateExperience={updateExperience}
-              />
-            )}
-            path="/first"
-            exact
-          />
+          <Route path="/first/:id" component={FirstStep} />
+
           <Route
             render={(props) => (
               <SecondStep
                 {...props}
-                experience={experience}
-                updateExperience={updateExperience}
+                experienceP={experienceP}
+                updateExperienceP={updateExperienceP}
               />
             )}
             path="/second"
@@ -56,8 +47,8 @@ function App() {
             render={(props) => (
               <ThirdStep
                 {...props}
-                experience={experience}
-                updateExperience={updateExperience}
+                experienceP={experienceP}
+                updateExperienceP={updateExperienceP}
               />
             )}
             path="/third"
@@ -67,8 +58,8 @@ function App() {
             render={(props) => (
               <FourthStep
                 {...props}
-                experience={experience}
-                updateExperience={updateExperience}
+                experienceP={experienceP}
+                updateExperienceP={updateExperienceP}
               />
             )}
             path="/fourth"
@@ -78,8 +69,8 @@ function App() {
             render={(props) => (
               <FifthStep
                 {...props}
-                experience={experience}
-                updateExperience={updateExperience}
+                experienceP={experienceP}
+                updateExperienceP={updateExperienceP}
               />
             )}
             path="/fifth"

@@ -18,6 +18,7 @@ const initialState = {
   experiences: [],
   experienceDetails: {},
   isLoading: false,
+  experience: {},
 };
 export const experiencesReducers = (
   state = initialState,
