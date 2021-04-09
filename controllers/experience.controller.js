@@ -89,6 +89,7 @@ const experienceController = {
         isBeingValidated,
         isValidated,
         isCreated,
+        limitParticipants,
       } = req.body;
       const newExperience = new Experiences({
         type,
@@ -111,13 +112,17 @@ const experienceController = {
         isBeingValidated,
         isValidated,
         isCreated,
+        limitParticipants,
       });
       //  const newExperience = new Experiences({ title: "test 3", activite: "activite 3" })
       console.log("title of experience : ", newExperience["title"]);
       console.log("L'object experience : ", newExperience);
       await newExperience.save();
       console.log("req.body : ", req.body);
-      res.json({ msg: "expérience créée avec succes" });
+      res.json({
+        msg: "expérience créée avec succes",
+        experience: newExperience,
+      });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
@@ -154,6 +159,7 @@ const experienceController = {
         isBeingValidated,
         isValidated,
         isCreated,
+        limitParticipants,
       } = req.body;
       await Experiences.findByIdAndUpdate(
         { _id: req.params.id },
@@ -178,6 +184,7 @@ const experienceController = {
           isBeingValidated,
           isValidated,
           isCreated,
+          limitParticipants,
         }
       );
       res.json({ msg: "L'expérience a été modifié avec succès" });

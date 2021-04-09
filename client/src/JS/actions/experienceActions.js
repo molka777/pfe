@@ -13,6 +13,9 @@ import {
   UPDATE_EXPERIENCE_FAIL,
   UPDATE_EXPERIENCE_SUCCESS,
   UPDATE_EXPERIENCE,
+  DELETE_EXPERIENCE,
+  DELETE_EXPERIENCE_SUCCESS,
+  DELETE_EXPERIENCE_FAIL,
 } from "../constants/experienceConstants";
 export const addExperience = (newExperience) => async (dispatch) => {
   dispatch({
@@ -65,26 +68,26 @@ export const getExperienceDetails = (id) => async (dispatch) => {
     });
   }
 };
-// //delete experience
-// export const deleteExperience = (id) => async (dispatch) => {
-//   dispatch({ type: DELETE_EXPERIENCE });
-//   try {
-//     const { data } = await axios.delete(`/api/experience/${id}`);
-//     dispatch({
-//       type: DELETE_EXPERIENCE_SUCCESS,
-//       payload: data.success,
-//     });
-//   } catch (error) {
-//     console.log(
-//       "🚀 ~ file: experienceActions.js ~ line 38 ~ getExperienceDetails ~ error",
-//       error
-//     );
-//     dispatch({
-//       type: DELETE_EXPERIENCE_FAIL,
-//       payload: error.response.data.message,
-//     });
-//   }
-// };
+//delete experience
+export const deleteExperience = (id) => async (dispatch) => {
+  dispatch({ type: DELETE_EXPERIENCE });
+  try {
+    const { data } = await axios.delete(`/api/experience/${id}`);
+    dispatch({
+      type: DELETE_EXPERIENCE_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: experienceActions.js ~ line 38 ~ getExperienceDetails ~ error",
+      error
+    );
+    dispatch({
+      type: DELETE_EXPERIENCE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 export const updateExperience = (id, updatedExperience) => async (dispatch) => {
   try {
     dispatch({

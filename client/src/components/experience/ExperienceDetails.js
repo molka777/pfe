@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getExperienceDetails,
   updateExperience,
+  getExperiences,
 } from "../../JS/actions/experienceActions";
 import {
   Button,
@@ -18,6 +19,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Alert,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import Carrousel from "../layout/Carrousel";
@@ -35,19 +37,6 @@ const ExperienceDetails = ({
     dispatch(getExperienceDetails(id));
   }, [dispatch, id]);
 
-  const handleValidation = (e) => {
-    e.preventDefault();
-
-    dispatch(
-      updateExperience(experience._id, {
-        ...experience,
-        isBeingValidated: true,
-        isCreated: false,
-      })
-    );
-
-    console.log("votre expérience a été envoyé pour la validation");
-  };
   const isLoading = useSelector((state) => state.experiencesReducers.isLoading);
   const experience = useSelector(
     (state) => state.experiencesReducers.experience
@@ -65,24 +54,29 @@ const ExperienceDetails = ({
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Demander la validation?</ModalHeader>
         <ModalBody>
-          Si vous envoyer votre demande de validation, vous ne pouvez plus ni la
-          modifier ni la supprimer.
+          Si vous envoyer votre demande de validation, vous ne pouvez plus ni
+          modifier ni supprimer votre expérience.
         </ModalBody>
         <ModalFooter>
-          <Button
-            color="primary"
+          <Link
+            className="btn btn-success"
+            to={`/experiences`}
             onClick={(e) => {
               toggle();
-              handleValidation(e);
+
+              dispatch(
+                updateExperience(experience._id, {
+                  ...experience,
+                  isBeingValidated: true,
+                  isCreated: false,
+                })
+              );
+              dispatch(getExperiences());
             }}
           >
-            <Link
-              className="btn btn-sm btn-outline-secondary"
-              to={`/experiences`}
-            >
-              Envoyer
-            </Link>
-          </Button>
+            Envoyer
+          </Link>
+
           <Button color="secondary" onClick={toggle}>
             Abandonner
           </Button>
@@ -93,6 +87,24 @@ const ExperienceDetails = ({
         <Col lg="7" md="8" className="center">
           <Card className="bg-white shadow border-">
             <CardHeader className="bg-white">
+              {experience.isBeingValidated === true ? (
+                <Link
+                  style={{ float: "right" }}
+                  className="btn btn-sm btn-info"
+                  to={`/experiences`}
+                >
+                  Retour
+                </Link>
+              ) : (
+                <Row style={{ float: "right" }}>
+                  <Button className=" btn-sm btn-success" onClick={toggle}>
+                    Demander la validation
+                  </Button>
+                  <Link to={`/create`} className="btn btn-sm btn-info">
+                    Modifier
+                  </Link>
+                </Row>
+              )}
               <div className="text-muted mt-2 mb-4">
                 <small>
                   {experience.type.title === "en ligne" ? (
@@ -216,7 +228,6 @@ const ExperienceDetails = ({
                 </CardBody>
               </Card>
             </CardHeader>
-
             <CardBody className="px-lg-5">
               <h4>Au programme</h4>
               <small>{experience.program.generalDesc}</small>
@@ -301,16 +312,7 @@ const ExperienceDetails = ({
             <div style={{ padding: "2%" }}>
               <Carrousel />
             </div>
-            <Col lg="10" md="8">
-              {experience.isBeingValidated === true ? (
-                <Link to={`/experiences`}>Retour</Link>
-              ) : (
-                <Row>
-                  <Button onClick={toggle}>Demander la validation</Button>
-                  <Link to={`/create`}>Modifier</Link>
-                </Row>
-              )}
-            </Col>
+            <div></div>
           </Card>
         </Col>
       </div>

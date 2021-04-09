@@ -1,7 +1,11 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addExperience } from "../../JS/actions/experienceActions";
-
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteExperience,
+  getExperienceDetails,
+  getExperiences,
+  updateExperience,
+} from "../../JS/actions/experienceActions";
 import {
   Button,
   Card,
@@ -21,47 +25,47 @@ import {
   ModalFooter,
 } from "reactstrap";
 import SideBar from "../layout/SideBar";
-const FifthStep = (props) => {
+import { Link } from "react-router-dom";
+import Loader from "../layout/Loader";
+const FifthStep = ({
+  match: {
+    params: { id },
+  },
+}) => {
   const dispatch = useDispatch();
-  const { experience } = props;
   const [modal, setModal] = useState(false);
-
   const toggle = () => setModal(!modal);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    props.updateExperience({
-      program: { ...program },
-      excludedEq: { ...excludedEq },
-      includedEq: { ...includedEq },
-      isValidated: false,
-      isBeingValidated: false,
-      isPublished: false,
-      isCreated: true,
-    });
-    console.log(experience.program);
-    // if (
-    //   experience.programm === program &&
-    //   experience.excludedEq === excludedEq &&
-    //   experience.includedEq === includedEq
-    // ) {
-    dispatch(addExperience(experience));
-    //}
-  };
-
+  const isLoading = useSelector((state) => state.experiencesReducers.isLoading);
+  const experience = useSelector(
+    (state) => state.experiencesReducers.experience
+  );
   const [program, setProgram] = useState({});
   const [excludedEq, setExcludedEq] = useState({});
   const [includedEq, setIncludedEq] = useState({});
-  //const isLoading = useSelector((state) => state.experiencesReducers.isLoading);
-  return (
+  useEffect(() => {
+    dispatch(getExperienceDetails(id));
+  }, [dispatch, id]);
+  useEffect(() => {
+    if (experience) {
+      if (experience.program) {
+        setProgram(experience.program.generalDesc);
+        setExcludedEq(experience.excludedEq);
+        setIncludedEq(experience.includedEq);
+      }
+    }
+  }, [experience]);
+  return isLoading ? (
+    <Loader />
+  ) : experience ? (
     <>
       <SideBar />
       <div className="main-content">
         <Container fluid>
+          {/* progress */}
           <div className="text-center">3 de 4</div>
           <Progress multi style={{ height: "21px" }}>
             <Progress bar value="70">
-              70%
+              100%
             </Progress>
           </Progress>
           <Col lg="10" md="12">
@@ -69,6 +73,7 @@ const FifthStep = (props) => {
               className="header-body border"
               style={{ padding: "2%", margin: "1%" }}
             >
+              {/* button exit */}
               <Button
                 onClick={toggle}
                 style={{
@@ -78,6 +83,7 @@ const FifthStep = (props) => {
               >
                 <i className="ni ni-fat-remove" />
               </Button>
+              {/* modal */}
               <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
                   Abandonner la création ?
@@ -90,20 +96,32 @@ const FifthStep = (props) => {
                   <Button color="primary" onClick={toggle}>
                     Continuer
                   </Button>{" "}
-                  <Button color="secondary" onClick={toggle}>
+                  <Link
+                    className="btn"
+                    to={"/experiences"}
+                    color="secondary"
+                    onClick={() => {
+                      dispatch(deleteExperience(experience._id));
+                      toggle();
+                      dispatch(getExperiences());
+                    }}
+                  >
                     Abandonner
-                  </Button>
+                  </Link>
                 </ModalFooter>
               </Modal>
+              {/* step title */}
               <Col lg="7" md="10">
                 <h2 style={{ color: "#32325d" }}>
                   <i class="far fa-file-alt" style={{ padding: "2%" }} />
                   Le programme de l'expérience
                 </h2>
               </Col>
-              <Form onSubmit={handleSubmit}>
+              {/* form */}
+              <Form>
                 <Card className=" shadow border-0">
                   <CardHeader className="bg-transparent">
+                    {/* experience type */}
                     {experience.type.title === "en ligne" ? (
                       <div className="icon icon-shape bg-info text-white rounded-circle shadow">
                         <i className="ni ni-laptop" />
@@ -116,8 +134,9 @@ const FifthStep = (props) => {
                     <span> Expérience {experience.type.title} </span>
                   </CardHeader>
                   <CardBody className="px-lg-5 py-lg-5">
+                    {/* advice part */}
                     <div
-                      className=" shadow border-0"
+                      className=" border"
                       style={{
                         padding: "5%",
                         color: "#5e72e4",
@@ -144,7 +163,7 @@ const FifthStep = (props) => {
                         participants vont tirez de votre expérience.
                       </span>
                     </div>
-
+                    {/* global description */}
                     <Col lg="12" md="12">
                       <p
                         for="exampleText"
@@ -163,6 +182,11 @@ const FifthStep = (props) => {
                           name="text"
                           id="exampleText"
                           rows="7"
+                          defaultValue={
+                            experience.program
+                              ? experience.program.generalDesc
+                              : program.generalDesc
+                          }
                           onChange={(e) =>
                             setProgram({
                               ...program,
@@ -186,7 +210,6 @@ const FifthStep = (props) => {
                       className="font-weight-bold mb-0"
                       style={{ padding: "2%" }}
                     >
-                      {" "}
                       Les équipements inclus
                     </h3>
                     <Row>
@@ -202,7 +225,7 @@ const FifthStep = (props) => {
 
                               <Col className="col-auto">
                                 <div className="icon icon-shape rounded-circle shadow">
-                                  <i className="fas fa-utensils" />{" "}
+                                  <i className="fas fa-utensils" />
                                 </div>
                               </Col>
                             </Row>
@@ -215,6 +238,11 @@ const FifthStep = (props) => {
                                       ...includedEq,
                                       food: e.target.value,
                                     })
+                                  }
+                                  defaultValue={
+                                    experience.includedEq
+                                      ? experience.includedEq.food
+                                      : includedEq.food
                                   }
                                   placeholder="Entrez ici la nourriture"
                                   type="textarea"
@@ -246,6 +274,11 @@ const FifthStep = (props) => {
                                       ...includedEq,
                                       drink: e.target.value,
                                     })
+                                  }
+                                  defaultValue={
+                                    experience.includedEq
+                                      ? experience.includedEq.drink
+                                      : includedEq.drink
                                   }
                                   placeholder="Entrez ici les boissons"
                                   type="textarea"
@@ -279,6 +312,147 @@ const FifthStep = (props) => {
                                       ...includedEq,
                                       material: e.target.value,
                                     })
+                                  }
+                                  defaultValue={
+                                    experience.includedEq
+                                      ? experience.includedEq.material
+                                      : includedEq.material
+                                  }
+                                  placeholder="Entrez ici le matériel"
+                                  type="textarea"
+                                  name="matériel"
+                                />
+                              </FormGroup>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                    </Row>
+                    <span className="mr-2 text-sm" style={{ color: "#2dce89" }}>
+                      <i className="ni ni-bulb-61" />
+                      Si les participants ont besoins de quoique ce soit pour
+                      profiter de l'expérience précisez le ici{" "}
+                    </span>
+                    <br />
+                    <small className="mr-2 " style={{ color: "grey" }}>
+                      <i
+                        className="fas fa-info-circle"
+                        style={{ paddingRight: "1%" }}
+                      />
+                      Cette partie est facultative{" "}
+                    </small>
+
+                    <h3
+                      className="font-weight-bold mb-0"
+                      style={{ padding: "2%" }}
+                    >
+                      Les équipements exclus
+                    </h3>
+                    <Row>
+                      <Col lg="6" xl="4">
+                        <Card className="card-stats mb-4 mb-xl-0">
+                          <CardBody style={{ padding: "5%" }}>
+                            <Row>
+                              <div className="col" style={{ paddingTop: "5%" }}>
+                                <CardTitle className=" mb-0">
+                                  A manger
+                                </CardTitle>
+                              </div>
+
+                              <Col className="col-auto">
+                                <div className="icon icon-shape rounded-circle shadow">
+                                  <i className="fas fa-utensils" />
+                                </div>
+                              </Col>
+                            </Row>
+
+                            <div style={{ paddingTop: "3%" }}>
+                              <FormGroup>
+                                <Input
+                                  onChange={(e) =>
+                                    setExcludedEq({
+                                      ...excludedEq,
+                                      food: e.target.value,
+                                    })
+                                  }
+                                  defaultValue={
+                                    experience.excludedEq
+                                      ? experience.excludedEq.food
+                                      : excludedEq.food
+                                  }
+                                  placeholder="Entrez ici la nourriture"
+                                  type="textarea"
+                                  name="nourriture"
+                                />
+                              </FormGroup>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                      <Col lg="6" xl="4">
+                        <Card className="card-stats mb-4 mb-xl-0">
+                          <CardBody style={{ padding: "5%" }}>
+                            <Row>
+                              <div className="col" style={{ paddingTop: "5%" }}>
+                                <CardTitle className="mb-0">A boire</CardTitle>
+                              </div>
+                              <Col className="col-auto">
+                                <div className="icon icon-shape rounded-circle shadow">
+                                  <i className="fas fa-wine-bottle" />{" "}
+                                </div>
+                              </Col>
+                            </Row>
+                            <div style={{ paddingTop: "3%" }}>
+                              <FormGroup>
+                                <Input
+                                  onChange={(e) =>
+                                    setExcludedEq({
+                                      ...excludedEq,
+                                      drink: e.target.value,
+                                    })
+                                  }
+                                  defaultValue={
+                                    experience.excludedEq
+                                      ? experience.excludedEq.drink
+                                      : excludedEq.drink
+                                  }
+                                  placeholder="Entrez ici les boissons"
+                                  type="textarea"
+                                  name="drink"
+                                />
+                              </FormGroup>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                      <Col lg="6" xl="4">
+                        <Card className="card-stats mb-4 mb-xl-0">
+                          <CardBody style={{ padding: "5%" }}>
+                            <Row>
+                              <div className="col" style={{ paddingTop: "5%" }}>
+                                <CardTitle className=" mb-0">
+                                  Matériels
+                                </CardTitle>
+                              </div>
+                              <Col className="col-auto">
+                                <div className="icon icon-shape rounded-circle shadow">
+                                  <i className="fas fa-archive" />{" "}
+                                </div>
+                              </Col>
+                            </Row>
+                            <div style={{ paddingTop: "3%" }}>
+                              <FormGroup>
+                                <Input
+                                  onChange={(e) =>
+                                    setExcludedEq({
+                                      ...excludedEq,
+                                      material: e.target.value,
+                                    })
+                                  }
+                                  defaultValue={
+                                    experience.excludedEq
+                                      ? experience.excludedEq.material
+                                      : excludedEq.material
                                   }
                                   placeholder="Entrez ici le matériel"
                                   type="textarea"
@@ -303,147 +477,50 @@ const FifthStep = (props) => {
                       />
                       Cette partie est facultative{" "}
                     </small>
-                    <h3
-                      className="font-weight-bold mb-0"
-                      style={{ padding: "2%" }}
-                    >
-                      {" "}
-                      Les équipements exclus
-                    </h3>
-                    <Row>
-                      <Col lg="6" xl="4">
-                        <Card className="card-stats mb-4 mb-xl-0">
-                          <CardBody style={{ padding: "5%" }}>
-                            <Row>
-                              <div className="col" style={{ paddingTop: "5%" }}>
-                                <CardTitle className=" mb-0">
-                                  A manger
-                                </CardTitle>
-                              </div>
-
-                              <Col className="col-auto">
-                                <div className="icon icon-shape rounded-circle shadow">
-                                  <i className="fas fa-utensils" />{" "}
-                                </div>
-                              </Col>
-                            </Row>
-
-                            <div style={{ paddingTop: "3%" }}>
-                              <FormGroup>
-                                <Input
-                                  onChange={(e) =>
-                                    setExcludedEq({
-                                      ...excludedEq,
-                                      food: e.target.value,
-                                    })
-                                  }
-                                  placeholder="Entrez ici la nourriture"
-                                  type="textarea"
-                                  name="nourriture"
-                                />
-                              </FormGroup>
-                            </div>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                      <Col lg="6" xl="4">
-                        <Card className="card-stats mb-4 mb-xl-0">
-                          <CardBody style={{ padding: "5%" }}>
-                            <Row>
-                              <div className="col" style={{ paddingTop: "5%" }}>
-                                <CardTitle className="mb-0">A boire</CardTitle>
-                              </div>
-                              <Col className="col-auto">
-                                <div className="icon icon-shape rounded-circle shadow">
-                                  <i className="fas fa-wine-bottle" />{" "}
-                                </div>
-                              </Col>
-                            </Row>
-                            <div style={{ paddingTop: "3%" }}>
-                              <FormGroup>
-                                <Input
-                                  onChange={(e) =>
-                                    setExcludedEq({
-                                      ...excludedEq,
-                                      drink: e.target.value,
-                                    })
-                                  }
-                                  placeholder="Entrez ici les boissons"
-                                  type="textarea"
-                                  name="drink"
-                                />
-                              </FormGroup>
-                            </div>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                      <Col lg="6" xl="4">
-                        <Card className="card-stats mb-4 mb-xl-0">
-                          <CardBody style={{ padding: "5%" }}>
-                            <Row>
-                              <div className="col" style={{ paddingTop: "5%" }}>
-                                <CardTitle className=" mb-0">
-                                  Matériels
-                                </CardTitle>
-                              </div>
-                              <Col className="col-auto">
-                                <div className="icon icon-shape rounded-circle shadow">
-                                  <i className="fas fa-archive" />{" "}
-                                </div>
-                              </Col>
-                            </Row>
-                            <div style={{ paddingTop: "3%" }}>
-                              <FormGroup>
-                                <Input
-                                  onChange={(e) =>
-                                    setExcludedEq({
-                                      ...excludedEq,
-                                      material: e.target.value,
-                                    })
-                                  }
-                                  placeholder="Entrez ici le matériel"
-                                  type="textarea"
-                                  name="matériel"
-                                />
-                              </FormGroup>
-                            </div>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                    </Row>
-                    <span className="mr-2 text-sm" style={{ color: "#2dce89" }}>
-                      <i className="ni ni-bulb-61" />
-                      Si les participants ont besoin d'apporter quoique ce soit
-                      pour profitez de l'expérience précisez le ici{" "}
-                    </span>
-                    <br />
-                    <small className="mr-2 " style={{ color: "grey" }}>
-                      <i
-                        className="fas fa-info-circle"
-                        style={{ paddingRight: "1%" }}
-                      />
-                      Cette partie est facultative{" "}
-                    </small>
                   </CardBody>
                 </Card>
-                <Button
-                  className="mt-4"
+                <Link
+                  to={`/fourth/${experience._id}`}
+                  className="btn"
                   style={{ color: "#5e72e4", backgroundColor: "#fff" }}
-                  onClick={() => {
-                    props.history.push("/fourth");
-                  }}
                 >
                   Précédent
-                </Button>
-                <Button className="mt-4" color="primary" type="submit">
-                  enregistrer
-                </Button>
+                </Link>
+                {program !== {} ? (
+                  <Link
+                    className="btn btn-primary"
+                    to={`/experiences`}
+                    onClick={() => {
+                      dispatch(
+                        updateExperience(id, {
+                          ...experience,
+                          program: { ...program },
+                          excludedEq: { ...excludedEq },
+                          includedEq: { ...includedEq },
+                          isValidated: false,
+                          isBeingValidated: false,
+                          isPublished: false,
+                          isCreated: true,
+                        })
+                      );
+                      dispatch(getExperiences());
+                    }}
+                  >
+                    enregistrer
+                  </Link>
+                ) : (
+                  <Button className="btn btn-primary" color="primary" disabled>
+                    Enregistrer
+                  </Button>
+                )}
               </Form>
             </div>
           </Col>
         </Container>
       </div>
     </>
+  ) : (
+    <p></p>
   );
 };
 

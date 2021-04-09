@@ -18,15 +18,19 @@ import SideBar from "../layout/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addExperience,
-  deleteExperience,
   getExperienceDetails,
-  getExperiences,
   updateExperience,
+  deleteExperience,
+  getExperiences,
 } from "../../JS/actions/experienceActions";
 import { Link, Redirect } from "react-router-dom";
 import Loader from "../layout/Loader";
 
-const FirstStep = () => {
+const FirstStep2 = ({
+  match: {
+    params: { id },
+  },
+}) => {
   const [type, setType] = useState("en ligne");
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
@@ -38,8 +42,15 @@ const FirstStep = () => {
 
   console.log(experience);
   useEffect(() => {
-    dispatch(addExperience({ type: { title: type } }));
-  }, [dispatch]);
+    dispatch(getExperienceDetails(id));
+  }, [dispatch, id]);
+  useEffect(() => {
+    if (experience) {
+      if (experience.type.title) {
+        setType(experience.type.title);
+      }
+    }
+  }, [experience]);
   return isLoading ? (
     <Loader />
   ) : experience ? (
@@ -291,13 +302,13 @@ const FirstStep = () => {
             <div>
               {experience ? (
                 <Link
-                  to={`/second/${experience.experience._id}`}
+                  to={`/second/${experience._id}`}
                   className="btn btn-primary"
                   onClick={() => {
                     console.log(experience);
 
                     dispatch(
-                      updateExperience(experience.experience._id, {
+                      updateExperience(experience._id, {
                         type: { title: type },
                       })
                     );
@@ -319,4 +330,4 @@ const FirstStep = () => {
   );
 };
 
-export default FirstStep;
+export default FirstStep2;

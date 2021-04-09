@@ -35,24 +35,14 @@ const CreatedExperienceListAd = () => {
     <Loader />
   ) : (
     <>
-      <Container className="mt--7" fluid>
+      <Container fluid>
         <Row className="mt-5">
-          <Col className="mb-5 mb-xl-0" xl="8">
+          <Col className="mb-5 mb-xl-0" xl="11">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
                     <h3 className="mb-0">Les expériences créées</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      Voir tout
-                    </Button>
                   </div>
                 </Row>
               </CardHeader>
@@ -60,9 +50,12 @@ const CreatedExperienceListAd = () => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Id</th>
+                    <th scope="col">Date</th>
+
                     <th scope="col">Titre</th>
                     <th scope="col">Type</th>
                     <th scope="col">Activité</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>

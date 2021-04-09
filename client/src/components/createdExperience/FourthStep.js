@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   Button,
   Card,
@@ -19,49 +21,89 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import Loader from "../layout/Loader";
+import {
+  deleteExperience,
+  getExperienceDetails,
+  getExperiences,
+  updateExperience,
+} from "../../JS/actions/experienceActions";
 import SideBar from "../layout/SideBar";
-const FourthStep = (props) => {
-  const { experience } = props;
+const FourthStep = ({
+  match: {
+    params: { id },
+  },
+}) => {
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
-
   const toggle = () => setModal(!modal);
-  const { register, handleSubmit, errors } = useForm({
-    defaultValues: {
-      city: experience.city,
-      startHour: experience.startHour,
-      endHour: experience.endHour,
-    },
-  });
-  const onSubmit = () => {
-    props.updateExperience({
-      city: city,
-      type: {
-        ...experience.type,
-        location: location,
-        assemblyPoint: assemblyPoint,
-      },
-      endHour: endHour,
-      startHour: startHour,
-    });
+  const isLoading = useSelector((state) => state.experiencesReducers.isLoading);
+  const experience = useSelector(
+    (state) => state.experiencesReducers.experience
+  );
 
-    props.history.push("/fifth");
-  };
   const [city, setCity] = useState("Ariana");
   const [location, setLocation] = useState(" ");
   const [assemblyPoint, setAssemblyPoint] = useState(" ");
   const [startHour, setStartHour] = useState(0);
   const [endHour, setEndHour] = useState(0);
+  const [defaultCities, setDefaultCities] = useState([
+    "Ariana",
+    "Béja",
+    "Ben Arous",
+    "Bizerte",
+    "Gabes",
+    "Gabes",
+    "Gafsa",
+    "Jendouba",
+    "Kairouan",
+    "Kasserine",
+    "Kebili",
+    "La Manouba",
+    "Le Kef",
+    "Mahdia",
+    "Médenine",
+    "Monastir",
+    "Nabeul",
+    "Sfax",
+    "Sidi Bouzid",
+    "Siliana",
+    "Sousse",
+    "Tataouine",
+    "Tozeur",
+    "Tunis",
+    "Zaghouan",
+  ]);
+  useEffect(() => {
+    dispatch(getExperienceDetails(id));
+  }, [dispatch, id]);
+  useEffect(() => {
+    if (experience) {
+      if (experience.city) {
+        setCity(experience.city);
+        setStartHour(experience.startHour);
+        setEndHour(experience.endHour);
+      }
+      if (experience.location) {
+        setAssemblyPoint(experience.assemblyPoint);
+        setLocation(experience.location);
+      }
+    }
+  }, [experience]);
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : experience ? (
     <>
       <SideBar />
       <div className="main-content">
         <Container fluid>
+          {/* progress */}
           <div className="text-center">2 de 4</div>
           <Progress multi style={{ height: "21px" }}>
             <Progress bar value="50">
-              40%
+              80%
             </Progress>
           </Progress>
 
@@ -70,6 +112,7 @@ const FourthStep = (props) => {
               className="header-body border"
               style={{ padding: "2%", margin: "1%" }}
             >
+              {/* exit button */}
               <Button
                 onClick={toggle}
                 style={{
@@ -79,6 +122,7 @@ const FourthStep = (props) => {
               >
                 <i className="ni ni-fat-remove" />
               </Button>
+              {/* modal  */}
               <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
                   Abandonner la création ?
@@ -91,20 +135,32 @@ const FourthStep = (props) => {
                   <Button color="primary" onClick={toggle}>
                     Continuer
                   </Button>{" "}
-                  <Button color="secondary" onClick={toggle}>
+                  <Link
+                    className="btn"
+                    to={"/experiences"}
+                    color="secondary"
+                    onClick={() => {
+                      dispatch(deleteExperience(experience._id));
+                      toggle();
+                      dispatch(getExperiences());
+                    }}
+                  >
                     Abandonner
-                  </Button>
+                  </Link>
                 </ModalFooter>
               </Modal>
+              {/* step title */}
               <Col lg="6" md="10">
                 <h2 style={{ color: "#32325d" }}>
                   <i className="fas fa-map-pin" style={{ padding: "2%" }} />
                   Lieu et heure de l'expérience
                 </h2>
               </Col>
-              <Form onSubmit={handleSubmit(onSubmit)}>
+              {/* form */}
+              <Form>
                 <Card className=" shadow border-0">
                   <CardHeader className="bg-transparent">
+                    {/* experience type */}
                     {experience.type.title === "en ligne" ? (
                       <div className="icon icon-shape bg-info text-white rounded-circle shadow">
                         <i className="ni ni-laptop" />
@@ -117,7 +173,9 @@ const FourthStep = (props) => {
 
                     <span> Expérience {experience.type.title} </span>
                   </CardHeader>
+
                   <CardBody className="px-lg-5 py-lg-5">
+                    {/* city part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -140,31 +198,15 @@ const FourthStep = (props) => {
                                 : console.log(e.target.value);
                             }}
                           >
-                            <option>Ariana</option>
-                            <option>Béja</option>
-                            <option>Ben Arous</option>
-                            <option>Bizerte</option>
-                            <option>Gabes</option>
-                            <option>Gabes</option>
-                            <option>Gafsa</option>
-                            <option>Jendouba</option>
-                            <option>Kairouan</option>
-                            <option>Kasserine</option>
-                            <option>Kebili</option>
-                            <option>La Manouba</option>
-                            <option>Le Kef</option>
-                            <option>Mahdia</option>
-                            <option>Médenine</option>
-                            <option>Monastir</option>
-                            <option>Nabeul</option>
-                            <option>Sfax</option>
-                            <option>Sidi Bouzid</option>
-                            <option>Siliana</option>
-                            <option>Sousse</option>
-                            <option>Tataouine</option>
-                            <option>Tozeur</option>
-                            <option>Tunis</option>
-                            <option>Zaghouan</option>
+                            {defaultCities.map((c) =>
+                              experience.city === null ? (
+                                <option>{c}</option>
+                              ) : (
+                                <option selected={experience.city === c}>
+                                  {c}
+                                </option>
+                              )
+                            )}
                           </Input>
                         </Col>
                       </FormGroup>
@@ -189,13 +231,17 @@ const FourthStep = (props) => {
                                 type="string"
                                 autoComplete="new-password"
                                 name="location"
-                                invalid={errors["location"]}
-                                innerRef={register({
-                                  required: "La localisation est obligatoire.",
-                                })}
+                                defaultValue={
+                                  experience ? experience.location : location
+                                }
+                                // invalid={errors["location"]}
+                                // innerRef={register({
+                                //   required: "La localisation est obligatoire.",
+                                // })}
                               />
                             </InputGroup>
                           </FormGroup>
+                          {/* assembly point part */}
                           <FormGroup>
                             <div>
                               <small className="font-weight-bold">
@@ -217,11 +263,16 @@ const FourthStep = (props) => {
                                 type="string"
                                 autoComplete="new-password"
                                 name="assemblyPoint"
-                                invalid={errors["assemblyPoint"]}
-                                innerRef={register({
-                                  required:
-                                    "Le point de rassemblement est obligatoire.",
-                                })}
+                                defaultValue={
+                                  experience
+                                    ? experience.assemblyPoint
+                                    : assemblyPoint
+                                }
+                                // invalid={errors["assemblyPoint"]}
+                                // innerRef={register({
+                                //   required:
+                                //     "Le point de rassemblement est obligatoire.",
+                                // })}
                               />
                             </InputGroup>
                             <span
@@ -238,6 +289,7 @@ const FourthStep = (props) => {
                         <p></p>
                       )}
                     </FormGroup>
+                    {/* start hour part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -259,6 +311,9 @@ const FourthStep = (props) => {
                               placeholder="datetime"
                               min="07:00"
                               max="19:00"
+                              defaultValue={
+                                experience ? experience.startHour : startHour
+                              }
                               onChange={(e) => {
                                 e.target.value
                                   ? setStartHour(e.target.value)
@@ -267,6 +322,7 @@ const FourthStep = (props) => {
                             />
                           </FormGroup>
                         </Col>
+                        {/* end hour */}
                         <Col lg="4" md="6">
                           <span className="mr-2 text-sm">L'heure de fin</span>
 
@@ -278,6 +334,9 @@ const FourthStep = (props) => {
                               placeholder="datetime"
                               min="07:00"
                               max="19:00"
+                              defaultValue={
+                                experience ? experience.endHour : endHour
+                              }
                               onChange={(e) => {
                                 e.target.value
                                   ? setEndHour(e.target.value)
@@ -297,26 +356,37 @@ const FourthStep = (props) => {
                     </FormGroup>
                   </CardBody>
                 </Card>
-                <Button
-                  className="mt-4"
+                <Link
+                  to={`/third/${experience._id}`}
+                  className="btn"
                   style={{ color: "#5e72e4", backgroundColor: "#fff" }}
-                  onClick={() => {
-                    props.history.push("/Third");
-                  }}
                 >
                   Précédent
-                </Button>
-                {startHour !== 0 && endHour !== 0 ? (
-                  <Button className="mt-4" color="primary" type="submit">
-                    Suivant
-                  </Button>
-                ) : (
-                  <Button
-                    className="mt-4"
-                    color="primary"
-                    type="submit"
-                    disabled
+                </Link>
+                {startHour !== 0 && endHour !== 0 && city !== "" ? (
+                  <Link
+                    to={`/fifth/${experience._id}`}
+                    className="btn btn-primary"
+                    onClick={() => {
+                      dispatch(
+                        updateExperience(id, {
+                          ...experience,
+                          city: city,
+                          type: {
+                            ...experience.type,
+                            location: location,
+                            assemblyPoint: assemblyPoint,
+                          },
+                          endHour: endHour,
+                          startHour: startHour,
+                        })
+                      );
+                    }}
                   >
+                    Suivant
+                  </Link>
+                ) : (
+                  <Button color="primary" className="btn-primary" disabled>
                     Suivant
                   </Button>
                 )}
@@ -326,6 +396,8 @@ const FourthStep = (props) => {
         </Container>
       </div>
     </>
+  ) : (
+    <p></p>
   );
 };
 

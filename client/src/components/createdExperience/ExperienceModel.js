@@ -1,12 +1,55 @@
-import React from "react";
-import { Card, CardBody, Row, Col, CardText, CardLink } from "reactstrap";
+import React, { useState } from "react";
+import {
+  Card,
+  CardBody,
+  Row,
+  Col,
+  CardText,
+  CardLink,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  CardHeader,
+  Alert,
+} from "reactstrap";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  deleteExperience,
+  getExperiences,
+} from "../../JS/actions/experienceActions";
 
 const ExperienceModel = ({ experience }) => {
+  const dispatch = useDispatch();
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
   return (
     <Row>
-      <Col lg="6" xl="5" style={{ marginBottom: "1%" }}>
-        <Col xl="5"></Col>
+      {/* Modal */}
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>Supprimer l'expérience?</ModalHeader>
+        <ModalBody>Etes vous sur de supprimer l'expérience?</ModalBody>
+        <ModalFooter>
+          <Link
+            className="btn btn-danger"
+            onClick={() => {
+              dispatch(deleteExperience(experience._id));
+              toggle();
+              dispatch(getExperiences());
+            }}
+            to={`/experiences`}
+          >
+            Supprimer
+          </Link>
+          <Button color="secondary" onClick={toggle}>
+            Annuler
+          </Button>
+        </ModalFooter>
+      </Modal>
+      {/* endModal */}
+      <Col lg="6" xl="6" style={{ marginBottom: "1%" }}>
         <Card className="card-stats mb-4 mb-xl-0">
           <CardBody>
             <Row>
@@ -23,21 +66,23 @@ const ExperienceModel = ({ experience }) => {
                     </small>
 
                     <CardText>{experience.title}</CardText>
-
-                    <Link
-                      to={`/experience/${experience._id}`}
-                      className="btn btn-sm btn-outline-secondary"
-                      style={{
-                        backgroundColor: "white",
-                        boxShadow: "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
-                        border: "0px white",
-                      }}
-                    >
-                      <small>Modifier</small>
-                    </Link>
-                    <CardLink href="#" style={{ color: "#525f7f" }}>
+                    <Row>
+                      <Link
+                        to={`/experience/${experience._id}`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          color: "#525f7f",
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <small>Modifier</small>
+                      </Link>
                       <Link
                         style={{
+                          color: "#525f7f",
                           backgroundColor: "white",
                           boxShadow:
                             "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
@@ -48,12 +93,14 @@ const ExperienceModel = ({ experience }) => {
                       >
                         <small>Demander la validation</small>
                       </Link>
-                    </CardLink>
-                    <CardLink href="#" style={{ color: "#f5365c " }}>
                       <Link
-                        to={`/experience/${experience._id}`}
+                        onClick={() => {
+                          toggle();
+                        }}
+                        to={`/experiences`}
                         className="btn btn-sm btn-outline-secondary"
                         style={{
+                          color: "#525f7f",
                           backgroundColor: "white",
                           boxShadow:
                             "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
@@ -62,7 +109,27 @@ const ExperienceModel = ({ experience }) => {
                       >
                         <small>Supprimer</small>
                       </Link>
-                    </CardLink>
+                    </Row>
+                    <hr style={{ margin: "1%" }} />
+                    <Row>
+                      <Link
+                        to={`/experiences`}
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          color: "#525f7f",
+                          backgroundColor: "white",
+                          boxShadow:
+                            "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
+                          border: "0px white",
+                        }}
+                      >
+                        <i className="fas fa-mouse-pointer" />
+                        <small>
+                          Consulter des outils pour vous aider à créer
+                          efficacement votre expérience
+                        </small>
+                      </Link>
+                    </Row>
                   </>
                 ) : experience.isBeingValidated ? (
                   <>
@@ -75,21 +142,26 @@ const ExperienceModel = ({ experience }) => {
                       En cours de validation
                     </small>
                     <CardText>{experience.title}</CardText>
-
-                    <CardLink href="#" style={{ color: "#f5365c " }}>
+                    <hr style={{ margin: "1%" }} />
+                    <Row>
                       <Link
                         to={`/experience/${experience._id}`}
                         className="btn btn-sm btn-outline-secondary"
                         style={{
+                          color: "#525f7f",
                           backgroundColor: "white",
                           boxShadow:
                             "0 4px 6px white, 0 0px 0px rgb(0 0 0 / 0%)",
                           border: "0px white",
                         }}
                       >
-                        <small>Consulter</small>
+                        <i className="fas fa-mouse-pointer" />
+                        <small>
+                          L'expérience est en cours de validation, vous pouvez
+                          seulement la consulter.
+                        </small>
                       </Link>
-                    </CardLink>
+                    </Row>
                   </>
                 ) : experience.isValidated ? (
                   <>
@@ -132,7 +204,10 @@ const ExperienceModel = ({ experience }) => {
                     </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
                       <Link
-                        to={`/experience/${experience._id}`}
+                        onClick={() => {
+                          toggle();
+                        }}
+                        to={`/experiences`}
                         className="btn btn-sm btn-outline-secondary"
                         style={{
                           backgroundColor: "white",
@@ -148,7 +223,6 @@ const ExperienceModel = ({ experience }) => {
                 ) : (
                   <>
                     <small>
-                      {" "}
                       <i
                         className="fas fa-circle"
                         style={{ paddingRight: "2%", color: "#f5365c" }}
@@ -187,7 +261,10 @@ const ExperienceModel = ({ experience }) => {
                     </CardLink>
                     <CardLink href="#" style={{ color: "#f5365c " }}>
                       <Link
-                        to={`/experience/${experience._id}`}
+                        onClick={() => {
+                          toggle();
+                        }}
+                        to={`/experiences`}
                         className="btn btn-sm btn-outline-secondary"
                         style={{
                           backgroundColor: "white",

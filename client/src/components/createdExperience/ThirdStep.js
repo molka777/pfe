@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -20,57 +22,90 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import { useForm } from "react-hook-form";
 import SideBar from "../layout/SideBar";
+import Loader from "../layout/Loader";
+import {
+  deleteExperience,
+  getExperienceDetails,
+  getExperiences,
+  updateExperience,
+} from "../../JS/actions/experienceActions";
 
-const ThirdStep = (props) => {
-  const { experience } = props;
+const ThirdStep = ({
+  match: {
+    params: { id },
+  },
+}) => {
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-  const { register, handleSubmit, errors } = useForm({
-    defaultValues: {
-      select: experience.language,
-    },
-  });
-  const onSubmit = () => {
-    props.updateExperience({
-      target: target,
-      difficulty: difficulty,
-      limitParticipants: limitParticipants,
-      language: language,
-    });
-    props.history.push("/fourth");
-  };
+  const isLoading = useSelector((state) => state.experiencesReducers.isLoading);
+  const experience = useSelector(
+    (state) => state.experiencesReducers.experience
+  );
+
   const [target, setTarget] = useState([]);
   const [difficulty, setDifficulty] = useState(" ");
   const [language, setLanguage] = useState("Arabe");
   const [phobia, setPhobia] = useState([]);
   const [limitParticipants, setLimitParticipants] = useState(0);
-
+  const [defaultTarget, setDefaultTarget] = useState(["enfant", "adulte"]);
+  const [defaultPhobia, setDefaultPhobia] = useState([
+    "claustrophobie",
+    "Agoraphobie",
+    "Acrophobie",
+  ]);
+  const [defaultDifficulty, setDefaultDifficulty] = useState([
+    "Léger",
+    "Modéré",
+    "Intense",
+    "Extreme",
+  ]);
   const addPhobia = (e) => {
     if (e.target.checked) {
-      setPhobia([...phobia, e.target.name]);
+      setPhobia([...new Set([...phobia, e.target.name])]);
     } else {
-      console.log(e.target.checked);
+      const arr = phobia.filter((p) => p !== e.target.name);
+      setPhobia(arr);
     }
   };
-  return (
+  useEffect(() => {
+    dispatch(getExperienceDetails(id));
+  }, [dispatch, id]);
+  useEffect(() => {
+    if (experience) {
+      if (experience.target) {
+        setTarget(experience.target);
+        setDifficulty(experience.difficulty);
+        setPhobia(experience.phobia);
+        setLimitParticipants(experience.limitParticipants);
+        setLanguage(experience.language);
+      }
+    }
+  }, [experience]);
+  return isLoading ? (
+    <Loader />
+  ) : experience ? (
     <>
       <SideBar />
       <div className="main-content">
         <Container fluid>
-          <div className="text-center">2 de 4</div>
+          {/* progress */}
+          <div className="text-center">3 de 4</div>
           <Progress multi style={{ height: "21px" }}>
             <Progress bar value="30">
-              30%
+              60%
             </Progress>
           </Progress>
+          {/* end progress */}
           <Col lg="10" md="12">
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            {/* form */}
+            <Form>
               <div
                 className="header-body border"
                 style={{ padding: "2%", margin: "1%" }}
               >
+                {/* exit button */}
                 <Button
                   onClick={toggle}
                   style={{
@@ -80,6 +115,7 @@ const ThirdStep = (props) => {
                 >
                   <i className="ni ni-fat-remove" />
                 </Button>
+                {/* modal exit */}
                 <Modal isOpen={modal} toggle={toggle}>
                   <ModalHeader toggle={toggle}>
                     Abandonner la création ?
@@ -92,14 +128,23 @@ const ThirdStep = (props) => {
                     <Button color="primary" onClick={toggle}>
                       Continuer
                     </Button>{" "}
-                    <Button color="secondary" onClick={toggle}>
+                    <Link
+                      className="btn"
+                      to={"/experiences"}
+                      color="secondary"
+                      onClick={() => {
+                        dispatch(deleteExperience(experience._id));
+                        toggle();
+                        dispatch(getExperiences());
+                      }}
+                    >
                       Abandonner
-                    </Button>
+                    </Link>
                   </ModalFooter>
                 </Modal>
+                {/* step title */}
                 <Col lg="6" md="10">
                   <h2 style={{ color: "#32325d" }}>
-                    {" "}
                     <i
                       className="fas fa-street-view"
                       style={{ padding: "2%" }}
@@ -107,7 +152,9 @@ const ThirdStep = (props) => {
                     La cible de l'expérience
                   </h2>
                 </Col>
+                {/* card */}
                 <Card className=" shadow border-0">
+                  {/* experience type */}
                   <CardHeader className="bg-transparent">
                     {experience.type.title === "en ligne" ? (
                       <div className="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -121,7 +168,9 @@ const ThirdStep = (props) => {
 
                     <span> Expérience {experience.type.title} </span>
                   </CardHeader>
+                  {/* end experience type */}
                   <CardBody className="px-lg-5 py-lg-5">
+                    {/* target part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -132,48 +181,60 @@ const ThirdStep = (props) => {
                         </small>
                       </div>
                       <Row className="icon-examples">
-                        <Col lg="6" md="6">
-                          <div className="custom-control custom-control-alternative custom-checkbox">
-                            <input
-                              className="custom-control-input"
-                              id=" customEnfant"
-                              type="checkbox"
-                              name="enfant"
-                              onChange={(e) => {
-                                e.target.checked
-                                  ? setTarget([...target, e.target.name])
-                                  : console.log(e.target.check);
-                              }}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor=" customEnfant"
-                            >
-                              <span className="text-muted">Enfant </span>
-                            </label>
-                          </div>
-                        </Col>
-                        <Col lg="6" md="6">
-                          <div className="custom-control custom-control-alternative custom-checkbox">
-                            <input
-                              className="custom-control-input"
-                              id=" customAdulte"
-                              type="checkbox"
-                              name="adulte"
-                              onChange={(e) => {
-                                e.target.checked
-                                  ? setTarget([...target, e.target.name])
-                                  : console.log(e.target.check);
-                              }}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor=" customAdulte"
-                            >
-                              <span className="text-muted">Adulte</span>
-                            </label>
-                          </div>
-                        </Col>
+                        {defaultTarget.map((tar) => (
+                          <Col lg="6" md="6">
+                            <div className="custom-control custom-control-alternative custom-checkbox">
+                              {experience.target == null ? (
+                                <input
+                                  className="custom-control-input"
+                                  id={tar}
+                                  type="checkbox"
+                                  name={tar}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setTarget([
+                                        ...new Set([...target, e.target.name]),
+                                      ]);
+                                    } else {
+                                      const arr = target.filter(
+                                        (t) => t !== e.target.name
+                                      );
+                                      setTarget(arr);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <input
+                                  className="custom-control-input"
+                                  id={tar}
+                                  type="checkbox"
+                                  name={tar}
+                                  defaultChecked={experience.target.includes(
+                                    tar
+                                  )}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setTarget([
+                                        ...new Set([...target, e.target.name]),
+                                      ]);
+                                    } else {
+                                      const arr = target.filter(
+                                        (t) => t !== e.target.name
+                                      );
+                                      setTarget(arr);
+                                    }
+                                  }}
+                                />
+                              )}
+                              <label
+                                className="custom-control-label"
+                                htmlFor={tar}
+                              >
+                                <span className="text-muted">{tar}</span>
+                              </label>
+                            </div>
+                          </Col>
+                        ))}
                       </Row>
                       <span
                         className="mr-2 text-sm"
@@ -184,6 +245,7 @@ const ThirdStep = (props) => {
                         légal
                       </span>
                     </FormGroup>
+                    {/* difficulty part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -195,70 +257,36 @@ const ThirdStep = (props) => {
                         </small>
                       </div>
                       <Row className="icon-examples">
-                        <Col lg="3" md="6">
-                          <FormGroup check>
-                            <Label check>
-                              <Input
-                                type="radio"
-                                name="radio2"
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? setDifficulty("Léger")
-                                    : console.log(e.target.check);
-                                }}
-                              />
-                              <span className="mr-2 text-sm">Léger</span>
-                            </Label>
-                          </FormGroup>
-                        </Col>
-                        <Col lg="3" md="6">
-                          <FormGroup check>
-                            <Label check>
-                              <Input
-                                type="radio"
-                                name="radio2"
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? setDifficulty("Modéré")
-                                    : console.log(e.target.check);
-                                }}
-                              />{" "}
-                              <span className="mr-2 text-sm">Modéré</span>
-                            </Label>
-                          </FormGroup>
-                        </Col>
-                        <Col lg="3" md="6">
-                          <FormGroup check>
-                            <Label check>
-                              <Input
-                                type="radio"
-                                name="radio2"
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? setDifficulty("Intense")
-                                    : console.log(e.target.check);
-                                }}
-                              />{" "}
-                              <span className="mr-2 text-sm">Intense</span>
-                            </Label>
-                          </FormGroup>
-                        </Col>
-                        <Col lg="3" md="6">
-                          <FormGroup check>
-                            <Label check>
-                              <Input
-                                type="radio"
-                                name="radio2"
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? setDifficulty("Extrème")
-                                    : console.log(e.target.check);
-                                }}
-                              />
-                              <span className="mr-2 text-sm">Extrème</span>
-                            </Label>
-                          </FormGroup>
-                        </Col>
+                        {defaultDifficulty.map((diff) => (
+                          <Col lg="3" md="6">
+                            <FormGroup check>
+                              <Label check>
+                                {experience.difficulty == null ? (
+                                  <Input
+                                    type="radio"
+                                    name="radio2"
+                                    onChange={(e) => {
+                                      if (e.target.checked) setDifficulty(diff);
+                                    }}
+                                  />
+                                ) : (
+                                  <Input
+                                    defaultChecked={
+                                      experience.difficulty === diff
+                                    }
+                                    type="radio"
+                                    name="radio2"
+                                    onChange={(e) => {
+                                      if (e.target.checked) setDifficulty(diff);
+                                    }}
+                                  />
+                                )}
+
+                                <span className="mr-2 text-sm">{diff}</span>
+                              </Label>
+                            </FormGroup>
+                          </Col>
+                        ))}
                       </Row>
                       <span
                         className="mr-2 text-sm"
@@ -268,6 +296,7 @@ const ThirdStep = (props) => {
                         Les enfants doivent etre accompagnés par le tuteur légal
                       </span>
                     </FormGroup>
+                    {/* phobia part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -280,69 +309,43 @@ const ThirdStep = (props) => {
                         </small>
                       </div>
                       <Row className="icon-examples">
-                        <Col lg="6" md="6">
-                          <div className="custom-control custom-control-alternative custom-checkbox">
-                            <input
-                              className="custom-control-input"
-                              id=" hauteur"
-                              type="checkbox"
-                              name="Acrophobie (Hauteur)"
-                              onChange={(e) => {
-                                addPhobia(e);
-                              }}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor=" hauteur"
-                            >
-                              <span className="text-muted">
-                                Acrophobie (Hauteur){" "}
-                              </span>
-                            </label>
-                          </div>
-                        </Col>
-                        <Col lg="6" md="6">
-                          <div className="custom-control custom-control-alternative custom-checkbox">
-                            <input
-                              className="custom-control-input"
-                              id=" claustrophobie"
-                              type="checkbox"
-                              name="Claustrophobie"
-                              onChange={(e) => {
-                                addPhobia(e);
-                              }}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor=" claustrophobie"
-                            >
-                              <span className="text-muted">
-                                Claustrophobie (les espaces confinés)
-                              </span>
-                            </label>
-                          </div>
-                        </Col>
-                        <Col lg="6" md="6">
-                          <div className="custom-control custom-control-alternative custom-checkbox">
-                            <input
-                              className="custom-control-input"
-                              id=" agoraphobie"
-                              type="checkbox"
-                              name="Agoraphobie"
-                              onChange={(e) => {
-                                addPhobia(e);
-                              }}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor=" agoraphobie"
-                            >
-                              <span className="text-muted">
-                                Agoraphobie (les espaces ouverts)
-                              </span>
-                            </label>
-                          </div>
-                        </Col>
+                        {defaultPhobia.map((ph) => (
+                          <Col lg="6" md="6">
+                            <div className="custom-control custom-control-alternative custom-checkbox">
+                              {experience.phobia == null ? (
+                                <input
+                                  className="custom-control-input"
+                                  id={ph}
+                                  type="checkbox"
+                                  name={ph}
+                                  onChange={(e) => {
+                                    addPhobia(e);
+                                  }}
+                                />
+                              ) : (
+                                <input
+                                  defaultChecked={experience.phobia.includes(
+                                    ph
+                                  )}
+                                  className="custom-control-input"
+                                  id={ph}
+                                  type="checkbox"
+                                  name={ph}
+                                  onChange={(e) => {
+                                    addPhobia(e);
+                                  }}
+                                />
+                              )}
+
+                              <label
+                                className="custom-control-label"
+                                htmlFor={ph}
+                              >
+                                <span className="text-muted">{ph}</span>
+                              </label>
+                            </div>
+                          </Col>
+                        ))}
                       </Row>
                       <small className="mr-2 " style={{ color: "grey" }}>
                         <i
@@ -352,6 +355,8 @@ const ThirdStep = (props) => {
                         Cette partie est facultative{" "}
                       </small>
                     </FormGroup>
+                    {/* end phobia part */}
+                    {/* limit participants part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -372,13 +377,20 @@ const ThirdStep = (props) => {
                           onChange={(e) => setLimitParticipants(e.target.value)}
                           placeholder="Le nombre maximal de participants"
                           type="number"
+                          min="1"
+                          max="50"
                           autoComplete="new-password"
+                          defaultValue={
+                            experience
+                              ? experience.limitParticipants
+                              : limitParticipants
+                          }
                           name="participants"
-                          invalid={errors["participants"]}
-                          innerRef={register({
-                            required:
-                              "Le nombre limite de participants est obligatoire.",
-                          })}
+                          // invalid={errors["participants"]}
+                          // innerRef={register({
+                          //   required:
+                          //     "Le nombre limite de participants est obligatoire.",
+                          // })}
                         />
                       </InputGroup>
                       <span
@@ -390,15 +402,17 @@ const ThirdStep = (props) => {
                         pouvez gérer pendant l'expérience
                       </span>
                       <br />
-                      {errors.participants && (
+                      {/* {errors.participants && (
                         <span
                           className="mr-2 text-sm"
                           style={{ color: "#dd3a4a" }}
                         >
                           {errors.participants.message}
                         </span>
-                      )}
+                      )} */}
                     </FormGroup>
+                    {/* end limit participants part */}
+                    {/* language part */}
                     <FormGroup
                       className="mb-3 border"
                       style={{ padding: "2%" }}
@@ -417,9 +431,22 @@ const ThirdStep = (props) => {
                               : console.log(e.target.value);
                           }}
                         >
-                          <option>Arabe</option>
-                          <option>Français</option>
-                          <option>Anglais</option>
+                          {[
+                            "Arabe",
+                            "Français",
+                            "Anglais",
+                            "Allemand",
+                            "Chinois",
+                            "Turc",
+                          ].map((l) =>
+                            experience.language === null ? (
+                              <option> {l} </option>
+                            ) : (
+                              <option selected={experience.language === l}>
+                                {l}
+                              </option>
+                            )
+                          )}
                         </Input>
                       </Col>
                       <span
@@ -431,37 +458,53 @@ const ThirdStep = (props) => {
                         suffisamment à l'aise pour parler aux participants.
                       </span>
                     </FormGroup>
+                    {/* end language part */}
                   </CardBody>
                 </Card>
-                <Button
-                  className="mt-4"
+                {/* end card */}
+                <Link
+                  to={`/second/${experience._id}`}
+                  className="btn"
                   style={{ color: "#5e72e4", backgroundColor: "#fff" }}
-                  onClick={() => {
-                    props.history.push("/second");
-                  }}
                 >
                   Précédent
-                </Button>
-                {target !== [] && difficulty !== " " ? (
-                  <Button className="mt-4" color="primary" type="submit">
-                    Suivant
-                  </Button>
-                ) : (
-                  <Button
-                    className="mt-4"
-                    color="primary"
-                    type="submit"
-                    disabled
+                </Link>
+                {experience &&
+                target !== [] &&
+                difficulty !== " " &&
+                limitParticipants !== 0 ? (
+                  <Link
+                    to={`/fourth/${experience._id}`}
+                    className="btn btn-primary"
+                    onClick={() => {
+                      dispatch(
+                        updateExperience(id, {
+                          ...experience,
+                          target: target,
+                          difficulty: difficulty,
+                          limitParticipants: limitParticipants,
+                          language: language,
+                          phobia: phobia,
+                        })
+                      );
+                    }}
                   >
+                    Suivant
+                  </Link>
+                ) : (
+                  <Button color="primary" className="btn-primary" disabled>
                     Suivant
                   </Button>
                 )}
               </div>
             </Form>
+            {/* end form */}
           </Col>
         </Container>
       </div>
     </>
+  ) : (
+    <p></p>
   );
 };
 
